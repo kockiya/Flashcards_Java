@@ -5,6 +5,9 @@
  */
 package Flashcards_Java;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  *
  * @author Xuxion
@@ -30,6 +33,13 @@ class Card {
     
     public Card(String q, String a){
         question = q;
+        face = true;
+        answer = a;
+    }
+    
+    public Card(String q, String a, int p){
+        question = q;
+        priority = p;
         face = true;
         answer = a;
     }
@@ -61,10 +71,48 @@ class Card {
        face = !face;
     }
     
+    public String[] storeString(){
+        String[] s = new String[3];
+        s[0] = question;
+        s[1] = answer;
+        s[2] = String.valueOf(priority);
+        return s;
+    }
+    
     @Override
     public String toString(){
         return getFace();
     }
     
+    
+}
+
+class Deck{
+    private HashMap<Integer, Card> cards;
+    private int c_index; // Position of empty space
+    private int s_index; // Position of selected card
+    private HashMap<Integer, String> history;
+    private int h_index; // History index
+    
+    public Deck(){
+        c_index = 0;
+        h_index = 0;
+    }
+    
+    public Deck(Card[] c){
+        c_index = 0;
+        h_index = 0;
+        for(int i = 0; i < c.length; i++)
+            add(c[i]);
+    }
+    
+    public int size(){
+        return cards.size();
+    }
+    
+    public void add(Card c){
+        cards.put(c_index, c);
+        c_index += 1;
+    }
     
 }
