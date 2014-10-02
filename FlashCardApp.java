@@ -14,12 +14,70 @@ import java.util.Map;
  * @author Xuxion
  */
 public class FlashCardApp {
-
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Deck d = new Deck();
+        
+        System.out.println("Adding Q:Hello A:World P:0...");
+        d.add(new Card("Hello", "World"));
+        d.debugPrint();
+        
+        System.out.println("\nAdding Q:Goodbye A:Universe P:1...");
+        d.add(new Card("Goodbye", "Universe", 1));
+        d.debugPrint();
+        
+        System.out.println("\nAttempting undo()");
+        if(d.undo()){
+            System.out.println("Undo success!");
+            d.debugPrint();}
+        else
+            System.out.println("Undo failed!");
+        
+        System.out.println("\nAttempting undo()");
+        if(d.undo()){
+            System.out.println("Undo success!");
+            d.debugPrint();}
+        else
+            System.out.println("Undo failed!");
+        
+        System.out.println("\nAttempting undo()");
+        if(d.undo()){
+            System.out.println("Undo success!");
+            d.debugPrint();}
+        else
+            System.out.println("Undo failed!");
+        
+        
+        System.out.println("\nAttempting redo()");
+        if(d.redo()){
+            System.out.println("Redo success!");
+            d.debugPrint();}
+        else
+            System.out.println("Redo failed!");
+        
+        System.out.println("\nAttempting redo()");
+        if(d.redo()){
+            System.out.println("Redo success!");
+            d.debugPrint();}
+        else
+            System.out.println("Redo failed!");
+        
+        System.out.println("\nAttempting redo()");
+        if(d.redo()){
+            System.out.println("Redo success!");
+            d.debugPrint();}
+        else
+            System.out.println("Redo failed!");
+        
+        
+        
+        
+        
+        
+        
     }
     
 }
@@ -80,6 +138,10 @@ class Card {
         return getFace();
     }
     
+    public void debugPrint(){
+        System.out.println("Q:"+question+" A:"+answer+" P:"+String.valueOf(priority));
+    }
+    
     
 }
 
@@ -94,15 +156,21 @@ class Deck{
         c_index = 0;
         h_index = 0;
         s_index = 0;
+        cards = new HashMap<>();
+        history = new HashMap<>();
+        save();
     }
     
     public Deck(Card[] c){
         c_index = 0;
         h_index = 0;
         s_index = 0;
+        cards = new HashMap<>();
+        history = new HashMap<>();
         for (Card c1 : c) {
             add(c1);
         }
+        save();
     }
     
     public int size(){
@@ -136,16 +204,17 @@ class Deck{
     
     
     
-    public void save(){
+    private void save(){
         //Saves cards map to history map.
+        if(!history.isEmpty())
+            h_index++;
         history.put(h_index, new HashMap<>(cards));
-        h_index++;
     }
     
-    public void overwrite(){
+    private void overwrite(){
         //Removes content of the history map from h_index onward.
         int overwrite_index = history.size();
-        while(overwrite_index >= h_index){
+        while(overwrite_index > h_index){
             history.remove(overwrite_index);
             overwrite_index--;
         }
@@ -160,7 +229,7 @@ class Deck{
     }
     
     public Boolean canRedo(){
-        return h_index < history.size();
+        return h_index < history.size()-1;
     }
     
     public Boolean undo(){
@@ -179,5 +248,11 @@ class Deck{
             return true;
         }
         return false;
+    }
+    
+    public void debugPrint(){
+        for(Card c: cards.values()){
+            c.debugPrint();
+        }
     }
 }
