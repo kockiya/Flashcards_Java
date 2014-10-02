@@ -7,6 +7,7 @@ package Flashcards_Java;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -18,8 +19,7 @@ public class FlashCardApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Card p = new Card("Hello", "World");
-        System.out.println(p);
+        System.out.println("Hello World!");
     }
     
 }
@@ -63,20 +63,16 @@ class Card {
         return priority;
     }
     
+    public void setPriority(int p){
+        priority = p;
+    }
+    
     public String getFace(){
         return face ? question : answer;
     }
     
     public void flipCard(){
        face = !face;
-    }
-    
-    public String[] storeString(){
-        String[] s = new String[3];
-        s[0] = question;
-        s[1] = answer;
-        s[2] = String.valueOf(priority);
-        return s;
     }
     
     @Override
@@ -88,22 +84,25 @@ class Card {
 }
 
 class Deck{
-    private HashMap<Integer, Card> cards;
+    private HashMap<Integer, Card> cards; //Each card is associated with a number
     private int c_index; // Position of empty space
     private int s_index; // Position of selected card
-    private HashMap<Integer, String> history;
+    private HashMap<Integer, HashMap<Integer, Card>> history;
     private int h_index; // History index
     
     public Deck(){
         c_index = 0;
         h_index = 0;
+        s_index = 0;
     }
     
     public Deck(Card[] c){
         c_index = 0;
         h_index = 0;
-        for(int i = 0; i < c.length; i++)
-            add(c[i]);
+        s_index = 0;
+        for (Card c1 : c) {
+            add(c1);
+        }
     }
     
     public int size(){
@@ -111,8 +110,74 @@ class Deck{
     }
     
     public void add(Card c){
+        //Adds a card to the deck. Adding changes history.
         cards.put(c_index, c);
-        c_index += 1;
+        c_index++;
+        save();
+        overwrite();
     }
     
+    public Boolean remove(int i){
+        //Re-numbers cards after removing. Removing changes history.
+        if(!isEmpty()){
+            cards.remove(i);
+            i++;
+            while(i < size()){
+                cards.put(i-1, cards.get(i));
+                cards.remove(i);
+                i++;
+            }
+            save();
+            overwrite();
+            return true;
+        }
+        return false;
+    }
+    
+    
+    
+    public void save(){
+        //Saves cards map to history map.
+        history.put(h_index, new HashMap<>(cards));
+        h_index++;
+    }
+    
+    public void overwrite(){
+        //Removes content of the history map from h_index onward.
+        int overwrite_index = history.size();
+        while(overwrite_index >= h_index){
+            history.remove(overwrite_index);
+            overwrite_index--;
+        }
+    }
+    
+    public Boolean isEmpty(){
+        return cards.size() <= 0;
+    }
+    
+    public Boolean canUndo(){
+        return h_index > 0;
+    }
+    
+    public Boolean canRedo(){
+        return h_index < history.size();
+    }
+    
+    public Boolean undo(){
+        if(canUndo()){
+            h_index--;
+            cards = history.get(h_index);
+            return true;
+        }
+        return false;
+    }
+    
+    public Boolean redo(){
+        if(canRedo()){
+            h_index++;
+            cards = history.get(h_index);
+            return true;
+        }
+        return false;
+    }
 }
