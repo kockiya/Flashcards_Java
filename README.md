@@ -10,7 +10,8 @@ I suppose my goals for this project are the same as the one done in Python. I'd 
 ---
 
 Todo (because I forget where I leave off):
-- Test undo()/redo() after history overwrite.
+- Come up with the priority mode.
 - Research Java regular expressions.
 - Try to allow user to set symbols other than Q#/A# and try allow delimiter or ending symbol. 
 		(like "Q#This is a question#Q but this is not apart of the A#Answer#A")
+- Make "add from file"
